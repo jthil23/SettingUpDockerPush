@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+/* ── F1 Design Tokens ── */
+
+@theme {
+  /* Color palette */
+  --color-f1-black: #0D0D0D;
+  --color-f1-dark: #1A1A1A;
+  --color-f1-carbon: #2D2D2D;
+  --color-f1-gray: #3D3D3D;
+  --color-f1-red: #E10600;
+  --color-f1-cyan: #00D2BE;
+  --color-f1-yellow: #FFF500;
+  --color-f1-white: #F0F0F0;
+
+  /* Fonts */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-chakra-petch);
+
+  /* Animations */
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
+  --animate-slide-in: slide-in 0.4s ease-out forwards;
+}
+
+/* ── Keyframes ── */
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(225, 6, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(225, 6, 0, 0.8);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ── Base Styles ── */
+
+body {
+  background-color: #0D0D0D;
+  color: #F0F0F0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1A1A1A;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3D3D3D;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E10600;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3D3D3D #1A1A1A;
+}
+
+/* ── Component Utilities ── */
+
+@utility card {
+  background-color: #1A1A1A;
+  border: 1px solid #2D2D2D;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+@utility card-hover {
+  background-color: #1A1A1A;
+  border: 1px solid #2D2D2D;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: border-color 0.3s ease;
+  &:hover {
+    border-color: #E10600;
+  }
+}
+
+@utility accent-line {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(to right, #E10600, #00D2BE, #FFF500);
+}
+
+@utility glow-red {
+  box-shadow: 0 0 15px rgba(225, 6, 0, 0.5);
+}
+
+@utility glow-cyan {
+  box-shadow: 0 0 15px rgba(0, 210, 190, 0.5);
+}

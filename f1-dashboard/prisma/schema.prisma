@@ -1,0 +1,197 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Season {
+  year         Int    @id
+  wikipediaUrl String @map("wikipedia_url") @db.VarChar(500)
+
+  races Race[]
+
+  @@map("seasons")
+}
+
+model Circuit {
+  circuitId String  @id @map("circuit_id") @db.VarChar(100)
+  name      String  @db.VarChar(200)
+  location  String  @db.VarChar(200)
+  country   String  @db.VarChar(100)
+  lat       Float
+  lng       Float
+  imageUrl  String? @map("image_url") @db.VarChar(500)
+
+  races Race[]
+
+  @@map("circuits")
+}
+
+model Driver {
+  driverId    String    @id @map("driver_id") @db.VarChar(100)
+  code        String?   @db.VarChar(10)
+  number      Int?
+  firstName   String    @map("first_name") @db.VarChar(100)
+  lastName    String    @map("last_name") @db.VarChar(100)
+  dob         DateTime? @db.Date
+  nationality String    @db.VarChar(100)
+  imageUrl    String?   @map("image_url") @db.VarChar(500)
+
+  results           Result[]
+  qualifyingResults QualifyingResult[]
+  driverStandings   DriverStanding[]
+  predictions       Prediction[]
+
+  @@map("drivers")
+}
+
+model Constructor {
+  constructorId  String  @id @map("constructor_id") @db.VarChar(100)
+  name           String  @db.VarChar(200)
+  nationality    String  @db.VarChar(100)
+  colorPrimary   String? @map("color_primary") @db.VarChar(7)
+  colorSecondary String? @map("color_secondary") @db.VarChar(7)
+  logoUrl        String? @map("logo_url") @db.VarChar(500)
+
+  results              Result[]
+  qualifyingResults    QualifyingResult[]
+  constructorStandings ConstructorStanding[]
+
+  @@map("constructors")
+}
+
+model Race {
+  id         Int       @id @default(autoincrement()) @map("race_id")
+  season     Int
+  round      Int
+  circuitId  String    @map("circuit_id") @db.VarChar(100)
+  raceName   String    @map("race_name") @db.VarChar(200)
+  date       DateTime  @db.Date
+  time       String?   @db.VarChar(20)
+  fp1Date    DateTime? @map("fp1_date")
+  fp1Time    String?   @map("fp1_time") @db.VarChar(20)
+  fp2Date    DateTime? @map("fp2_date")
+  fp2Time    String?   @map("fp2_time") @db.VarChar(20)
+  fp3Date    DateTime? @map("fp3_date")
+  fp3Time    String?   @map("fp3_time") @db.VarChar(20)
+  qualiDate  DateTime? @map("quali_date")
+  qualiTime  String?   @map("quali_time") @db.VarChar(20)
+  sprintDate DateTime? @map("sprint_date")
+  sprintTime String?   @map("sprint_time") @db.VarChar(20)
+
+  seasonRef Season  @relation(fields: [season], references: [year])
+  circuit   Circuit @relation(fields: [circuitId], references: [circuitId])
+
+  results              Result[]
+  qualifyingResults    QualifyingResult[]
+  driverStandings      DriverStanding[]
+  constructorStandings ConstructorStanding[]
+  predictions          Prediction[]
+
+  @@unique([season, round])
+  @@map("races")
+}
+
+model Result {
+  id             Int     @id @default(autoincrement()) @map("result_id")
+  raceId         Int     @map("race_id")
+  driverId       String  @map("driver_id") @db.VarChar(100)
+  constructorId  String  @map("constructor_id") @db.VarChar(100)
+  grid           Int?
+  position       Int?
+  positionText   String? @map("position_text") @db.VarChar(10)
+  points         Float   @default(0)
+  laps           Int?
+  status         String? @db.VarChar(100)
+  fastestLapTime String? @map("fastest_lap_time") @db.VarChar(20)
+  fastestLapRank Int?    @map("fastest_lap_rank")
+
+  race        Race        @relation(fields: [raceId], references: [id])
+  driver      Driver      @relation(fields: [driverId], references: [driverId])
+  constructor Constructor @relation(fields: [constructorId], references: [constructorId])
+
+  @@unique([raceId, driverId])
+  @@map("results")
+}
+
+model QualifyingResult {
+  id            Int     @id @default(autoincrement())
+  raceId        Int     @map("race_id")
+  driverId      String  @map("driver_id") @db.VarChar(100)
+  constructorId String  @map("constructor_id") @db.VarChar(100)
+  position      Int?
+  q1            String? @db.VarChar(20)
+  q2            String? @db.VarChar(20)
+  q3            String? @db.VarChar(20)
+
+  race        Race        @relation(fields: [raceId], references: [id])
+  driver      Driver      @relation(fields: [driverId], references: [driverId])
+  constructor Constructor @relation(fields: [constructorId], references: [constructorId])
+
+  @@unique([raceId, driverId])
+  @@map("qualifying_results")
+}
+
+model DriverStanding {
+  id       Int    @id @default(autoincrement())
+  raceId   Int    @map("race_id")
+  driverId String @map("driver_id") @db.VarChar(100)
+  points   Float  @default(0)
+  position Int
+  wins     Int    @default(0)
+
+  race   Race   @relation(fields: [raceId], references: [id])
+  driver Driver @relation(fields: [driverId], references: [driverId])
+
+  @@unique([raceId, driverId])
+  @@map("driver_standings")
+}
+
+model ConstructorStanding {
+  id            Int    @id @default(autoincrement())
+  raceId        Int    @map("race_id")
+  constructorId String @map("constructor_id") @db.VarChar(100)
+  points        Float  @default(0)
+  position      Int
+  wins          Int    @default(0)
+
+  race        Race        @relation(fields: [raceId], references: [id])
+  constructor Constructor @relation(fields: [constructorId], references: [constructorId])
+
+  @@unique([raceId, constructorId])
+  @@map("constructor_standings")
+}
+
+model Prediction {
+  id                  Int      @id @default(autoincrement()) @map("prediction_id")
+  raceId              Int      @map("race_id")
+  predictedWinner     String   @map("predicted_winner") @db.VarChar(100)
+  predictedPodium     Json     @map("predicted_podium")
+  predictedFastestLap String?  @map("predicted_fastest_lap") @db.VarChar(100)
+  createdAt           DateTime @default(now()) @map("created_at")
+  actualWinner        String?  @map("actual_winner") @db.VarChar(100)
+  actualPodium        Json?    @map("actual_podium")
+  score               Int?
+
+  race   Race   @relation(fields: [raceId], references: [id])
+  winner Driver @relation(fields: [predictedWinner], references: [driverId])
+
+  @@unique([raceId])
+  @@map("predictions")
+}
+
+model SyncLog {
+  id             Int      @id @default(autoincrement()) @map("sync_id")
+  entity         String   @db.VarChar(100)
+  lastSynced     DateTime @default(now()) @map("last_synced")
+  status         String   @db.VarChar(50)
+  recordsUpdated Int      @default(0) @map("records_updated")
+
+  @@map("sync_log")
+}

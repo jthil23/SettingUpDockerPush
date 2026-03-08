@@ -1,0 +1,9 @@
+services:
+  f1-dashboard:
+    build: .
+    container_name: f1-dashboard
+    ports:
+      - "8100:3000"
+    environment:
+      - DATABASE_URL=mysql://mainUser:mainPass@192.168.1.103:3306/JT-F1
+    restart: unless-stopped

@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.env
+*.md
+docs/
+.claude/
+push.sh
+docker-compose*.yml
