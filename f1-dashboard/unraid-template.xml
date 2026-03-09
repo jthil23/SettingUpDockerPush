@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>f1-dashboard</Name>
+  <Repository>jthil23/f1-dashboard:latest</Repository>
+  <Registry>https://hub.docker.com/r/jthil23/f1-dashboard</Registry>
+  <Branch>
+    <Tag>latest</Tag>
+    <TagDescription>Latest stable release</TagDescription>
+  </Branch>
+  <Network>bridge</Network>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Overview>F1 Dashboard - A Formula 1 race schedule, standings, predictions, and live timing dashboard.</Overview>
+  <Category>MediaApp:Other</Category>
+  <WebUI>http://[IP]:[PORT:8100]</WebUI>
+  <Icon>https://raw.githubusercontent.com/jthil23/SettingUpDockerPush/main/f1-dashboard/public/favicon.ico</Icon>
+  <ExtraParams/>
+  <Config Name="Web UI Port" Target="3000" Default="8100" Mode="tcp" Description="Port for the web interface" Type="Port" Display="always" Required="true" Mask="false">8100</Config>
+  <Config Name="Database URL" Target="DATABASE_URL" Default="mysql://mainUser:mainPass@192.168.1.103:3306/JT-F1" Mode="" Description="MySQL/MariaDB connection string" Type="Variable" Display="always" Required="true" Mask="false">mysql://mainUser:mainPass@192.168.1.103:3306/JT-F1</Config>
+</Container>
